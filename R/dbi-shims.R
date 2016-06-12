@@ -32,11 +32,34 @@ db_save_query.SQLServerConnection <- function (con, sql, name, temporary = TRUE,
   name
 }
 
+#' @importFrom dplyr db_create_table escape ident sql_vector build_sql
+#' @export
+
+db_create_table.SQLServerConnection <- function(con, table, types,
+  temporary = FALSE, ...) {
+  assertthat::assert_that(assertthat::is.string(table), is.character(types))
+  field_names <- escape(ident(names(types)), collapse = NULL, con = con)
+  fields <- sql_vector(paste0(field_names, " ", types), parens = TRUE,
+    collapse = ", ", con = con)
+  if (temporary) table <- paste0("#", table)
+  sql <- build_sql("CREATE TABLE ", ident(table), " ", fields, con = con)
+}
+
+#' @importFrom dplyr db_insert_into
+#' @export
+
+db_insert_into.SQLServerConnection <- function(con, table, values, ...) {
+  dbWriteTable(con, table, values, append = TRUE)
+}
+
 #' @importFrom dplyr db_drop_table
 #' @export
-db_drop_table.SQLServerConnection <- function (con, table, force = FALSE, ...) {
-  message("The 'force' argument is ignored.")
-  dbRemoveTable(con, table)
+
+db_drop_table.SQLServerConnection <- function(con, table, force = FALSE, ...) {
+  # IF EXISTS only supported by SQL Server 2016 (v. 13) and above.
+  qry <- paste0("DROP TABLE ", if (force && con$db.version > 12) "IF EXISTS ",
+    dbQuoteIdentifier(con, table))
+  assertthat::is.count(dbExecute(con, qry))
 }
 
 #' @importFrom dplyr db_analyze ident build_sql
