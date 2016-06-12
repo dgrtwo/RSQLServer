@@ -14,7 +14,6 @@ db_has_table.SQLServerConnection <- function (con, table) {
   NA
 }
 
-
 #' @importFrom dplyr db_query_fields ident
 #' @export
 db_query_fields.SQLServerConnection <- function (con, sql, ...) {
@@ -29,7 +28,7 @@ db_save_query.SQLServerConnection <- function (con, sql, name, temporary = TRUE,
   if (temporary) name <- paste0("#", name)
   tt_sql <- build_sql("SELECT * INTO ", ident(name), " FROM ",
     sql_subquery(con, sql), con = con)
-  dbSendUpdate(con, tt_sql)
+  dbExecute(con, tt_sql)
   name
 }
 
@@ -52,7 +51,7 @@ db_analyze.SQLServerConnection <- function (con, table, ...) {
   cols <- sql_vector(cols, collapse = ', ', con = con)
   sql <- build_sql("CREATE STATISTICS ", ident(name),
     " ON ", ident(table), " ", cols, con = con)
-  dbSendUpdate(con, sql)
+  dbExecute(con, sql)
 }
 
 # Inherited db_create_index.DBIConnection method from dplyr
