@@ -75,10 +75,14 @@ db_analyze.SQLServerConnection <- function (con, table, ...) {
 #' @importFrom dplyr db_explain
 #' @export
 db_explain.SQLServerConnection <- function (con, sql, ...) {
+  # SET SHOWPLAN_ALL available from SQL Server 2000 on.
+  # https://technet.microsoft.com/en-us/library/aa259203(v=sql.80).aspx
   # http://msdn.microsoft.com/en-us/library/ms187735.aspx
   # http://stackoverflow.com/a/7359705/1193481
-  # dbSendUpdate(con, "SET SHOWPLAN_TEXT ON")
-  # on.exit(dbSendUpdate(con, "SET SHOWPLAN_TEXT OFF"))
-  # dbGetQuery(con, sql)
-  message("SHOWPLAN will be supported in a future release of RSQLServer.")
+  dbExecute(con, "SET SHOWPLAN_ALL ON")
+  on.exit(dbExecute(con, "SET SHOWPLAN_ALL OFF"))
+  res <- dbGetQuery(con, sql) %>%
+    dplyr::select_("StmtId", "NodeId", "Parent", "PhysicalOp", "LogicalOp",
+      "Argument", "TotalSubtreeCost")
+  paste(utils::capture.output(print(res)), collapse = "\n")
 }
