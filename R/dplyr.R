@@ -52,42 +52,6 @@ tbl.src_sqlserver <- function (src, from, ...) {
   tbl_sql("sqlserver", src = src, from = from, ...)
 }
 
-## Math (scalar) functions - no change across versions based on eyeballing:
-# MSSQL 2000: https://technet.microsoft.com/en-us/library/aa258862(v=sql.80).aspx
-# MSSQL 2005: https://technet.microsoft.com/en-us/library/ms177516(v=sql.90).aspx
-# MSSQL 2008: https://technet.microsoft.com/en-us/library/ms177516(v=sql.100).aspx
-# MSSQL 2008(r2): https://technet.microsoft.com/en-us/library/ms177516(v=sql.105).aspx
-# MSSQL 2012: https://technet.microsoft.com/en-us/library/ms177516(v=sql.110).aspx
-
-## Aggregate functions
-# MSSQL 2005: https://technet.microsoft.com/en-US/library/ms173454(v=sql.90).aspx
-# MSSQL 2008: https://technet.microsoft.com/en-US/library/ms173454(v=sql.100).aspx
-# MSSQL 2008r2*: https://technet.microsoft.com/en-US/library/ms173454(v=sql.100).aspx
-# MSSQL 2012*: https://technet.microsoft.com/en-US/library/ms173454(v=sql.110).aspx
-# MSSQL 2014: https://technet.microsoft.com/en-US/library/ms173454(v=sql.120).aspx
-#' @importFrom dplyr src_translate_env sql_variant sql_translator base_scalar
-#' @importFrom dplyr base_agg sql_prefix base_win
-#' @export
-src_translate_env.src_sqlserver <- function (x) {
-  sql_variant(
-    scalar = sql_translator(.parent = base_scalar,
-      # http://sqlserverplanet.com/tsql/format-string-to-date
-      as.POSIXct = function(x) build_sql("CAST(", x, " AS DATETIME)"),
-      # DATE data type only available since SQL Server 2008
-      as.Date = function (x) build_sql("CAST(", x, " AS DATE)")
-    ),
-    aggregate = sql_translator(.parent = base_agg,
-      n = function() sql("COUNT(*)"),
-      mean = sql_prefix('AVG'),
-      sd = sql_prefix("STDEV"),
-      sdp = sql_prefix("STDEVP"),
-      varp = sql_prefix("VARP")
-    ),
-    window = base_win
-  )
-}
-
-
 #' @importFrom dplyr copy_to
 #' @export
 

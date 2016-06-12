@@ -25,11 +25,11 @@
 # http://stackoverflow.com/questions/20515358/rcmd-check-unexported-objects-imported-by-calls#comment30669909_20515358
 # https://stat.ethz.ch/pipermail/r-devel/2013-August/thread.html#67180
 
-#' @importFrom dplyr translate_sql_q build_sql ident query
+#' @importFrom dplyr translate_sql_ build_sql ident query
 build_query <- function(x, limit = NULL, is_percent = NULL) {
   assertthat::assert_that(is.null(limit) || assertthat::is.number(limit))
   translate <- function(expr, ...) {
-    translate_sql_q(expr, tbl = x, env = NULL, ...)
+    translate_sql_(expr, tbl = x, env = NULL, ...)
   }
 
   if (x$summarise) {

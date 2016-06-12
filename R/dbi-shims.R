@@ -82,4 +82,3 @@ db_explain.SQLServerConnection <- function (con, sql, ...) {
   # dbGetQuery(con, sql)
   message("SHOWPLAN will be supported in a future release of RSQLServer.")
 }
-
