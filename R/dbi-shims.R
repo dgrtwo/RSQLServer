@@ -42,16 +42,7 @@ db_drop_table.SQLServerConnection <- function (con, table, force = FALSE, ...) {
 #' @importFrom dplyr db_analyze ident build_sql
 #' @export
 db_analyze.SQLServerConnection <- function (con, table, ...) {
-  # https://msdn.microsoft.com/en-us/library/ms188038(v=sql.90).aspx
-  # "Only the table owner can create statistics on that table....
-  # Requires ALTER permission on the table or view."
-  # http://ss64.com/sql/stats_c.html
-  name <- paste0("STAT_", random_ident_name())
-  cols <- db_query_fields(con, ident(table))
-  cols <- sql_vector(cols, collapse = ', ', con = con)
-  sql <- build_sql("CREATE STATISTICS ", ident(name),
-    " ON ", ident(table), " ", cols, con = con)
-  dbExecute(con, sql)
+  TRUE
 }
 
 # Inherited db_create_index.DBIConnection method from dplyr
