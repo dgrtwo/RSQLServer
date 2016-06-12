@@ -28,12 +28,7 @@ db_query_rows.SQLServerConnection <- function(con, sql, ...) {
 #' @importFrom dplyr db_query_fields ident
 #' @export
 db_query_fields.SQLServerConnection <- function (con, sql, ...) {
-  # Using MSFT recommendation linked here:
-  # https://github.com/imanuelcostigan/RSQLServer/issues/23
-  fields <- build_sql("SELECT TOP 0 * FROM ", ident(sql), con = con)
-  qry <- dbSendQuery(con, fields)
-  on.exit(dbClearResult(qry))
-  jdbcColumnNames(qry@md)
+  dbListFields(con, sql, ...)
 }
 
 #' @importFrom dplyr db_save_query
