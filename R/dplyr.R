@@ -53,23 +53,6 @@ tbl.src_sqlserver <- function (src, from, ...) {
   tbl_sql("sqlserver", src = src, from = from, ...)
 }
 
-#' @importFrom dplyr copy_to
-#' @export
-
-copy_to.src_sqlserver <- function (dest, df, name = deparse(substitute(df)),
-  types = NULL, temporary = TRUE, indexes = NULL, analyze = TRUE, ...) {
-  assertthat::assert_that(is.data.frame(df), assertthat::is.string(name),
-    assertthat::is.flag(temporary))
-  con <- dest$con
-  if (temporary) name <- paste0("#", name)
-  # DB to throw error if table `name` already exists
-  dbWriteTable(con, name, df, overwrite = FALSE, append = FALSE)
-  db_create_indexes(con, name, indexes)
-  if (analyze) db_analyze(con, name)
-  on.exit(NULL)
-  tbl(dest, name)
-}
-
 
 #' @importFrom dplyr compute groups
 #' @export
