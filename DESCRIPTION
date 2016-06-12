@@ -34,6 +34,7 @@ Suggests:
     testthat,
     DBItest
 Remotes:
+    hadley/dplyr,
     rstats-db/DBI,
     rstats-db/DBItest
 SystemRequirements: Java (>= 1.3)
