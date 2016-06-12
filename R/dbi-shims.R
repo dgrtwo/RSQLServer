@@ -26,9 +26,9 @@ db_save_query.SQLServerConnection <- function (con, sql, name, temporary = TRUE,
   ...) {
   # http://smallbusiness.chron.com/create-table-query-results-microsoft-sql-50836.html
   if (temporary) name <- paste0("#", name)
-  tt_sql <- build_sql("SELECT * INTO ", ident(name), " FROM ",
+  qry <- build_sql("SELECT * INTO ", ident(name), " FROM ",
     sql_subquery(con, sql), con = con)
-  dbExecute(con, tt_sql)
+  dbExecute(con, qry)
   name
 }
 
