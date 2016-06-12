@@ -43,7 +43,8 @@ src_sqlserver <- function (server, file = NULL, database = "",
 #' @export
 src_desc.src_sqlserver <- function (x) {
   info <- x$info
-  paste0(info$db.product.name, ' version ', info$db.version, " [", info$user, "]")
+  paste0("SQLServer ", info$db.version, " [", info$username, "@",
+    info$host, ":", info$port, "/", info$dbname, "]")
 }
 
 #' @importFrom dplyr tbl tbl_sql
