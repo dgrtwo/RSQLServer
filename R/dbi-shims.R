@@ -52,7 +52,10 @@ db_create_table.SQLServerConnection <- function(con, table, types,
 #' @export
 
 db_insert_into.SQLServerConnection <- function(con, table, values, ...) {
-  dbWriteTable(con, table, values, append = TRUE)
+  # Only used in dplyr's copy_to which creates a table just before inserting
+  # data into it. Therefore, overwrite = FALSE, append = TRUE is safest
+  # option
+  dbWriteTable(con, table, values, overwrite = FALSE, append = TRUE)
 }
 
 #' @importFrom dplyr db_drop_table
