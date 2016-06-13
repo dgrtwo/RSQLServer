@@ -323,8 +323,7 @@ setMethod("dbExistsTable", "SQLServerConnection", function (conn, name, ...) {
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbRemoveTable", "SQLServerConnection", function (conn, name, ...) {
-  res <- dbExecute(conn, paste0("DROP TABLE ", dbQuoteIdentifier(conn, name)))
-  assertthat::is.count(res)
+  dbExecute(conn, paste0("DROP TABLE ", dbQuoteIdentifier(conn, name)))
 })
 
 #' @rdname SQLServerConnection-class
