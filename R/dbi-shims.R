@@ -43,6 +43,9 @@ db_create_table.SQLServerConnection <- function(con, table, types,
     collapse = ", ", con = con)
   if (temporary) table <- paste0("#", table)
   sql <- build_sql("CREATE TABLE ", ident(table), " ", fields, con = con)
+  dbExecute(con, sql)
+  # Needs to return table name as temp tables are prefixed by `#` in SQL Server
+  table
 }
 
 #' @importFrom dplyr db_insert_into
