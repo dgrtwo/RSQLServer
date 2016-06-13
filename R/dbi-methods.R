@@ -357,7 +357,6 @@ setMethod("dbWriteTable", "SQLServerConnection",
     dbBegin(conn)
     on.exit(dbRollback(conn))
 
-    name <- dbQuoteIdentifier(conn, name)
     tbl_exists <- dbExistsTable(conn, name)
 
     if (tbl_exists && !append && !overwrite) {
@@ -369,6 +368,8 @@ setMethod("dbWriteTable", "SQLServerConnection",
       stop("The table ", name, " does not exist but you are trying to ",
         "append data to it.")
     }
+
+    name <- dbQuoteIdentifier(conn, name)
 
     # NB: if table "name" does not exist, having "overwrite" set to TRUE does
     # not cause problems, so no need for error handling in this case.
