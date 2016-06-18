@@ -209,7 +209,7 @@ setMethod("dbExecute", c("SQLServerConnection", "character"),
       stop("execute JDBC update query failed in dbExecute (",
         rJava::.jcall(x, "S", "getMessage"), ")")
     } else {
-      is.integer(res)
+      res
     }
   }
 )
