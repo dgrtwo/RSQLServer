@@ -331,19 +331,22 @@ setMethod("dbRemoveTable", "SQLServerConnection", function (conn, name, ...) {
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbBegin", "SQLServerConnection", function (conn, ...) {
-  assertthat::is.number(dbExecute(conn, "BEGIN TRANSACTION"))
+  rJava::.jcall(conn@jc, "V", "setAutoCommit", FALSE)
+  TRUE
 })
 
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbCommit", "SQLServerConnection", function (conn, ...) {
-  assertthat::is.number(dbExecute(conn, "COMMIT TRANSACTION"))
+  rJava::.jcall(conn@jc, "V", "commit")
+  TRUE
 })
 
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbRollback", "SQLServerConnection", function (conn, ...) {
-  assertthat::is.number(dbExecute(conn, "ROLLBACK TRANSACTION"))
+  rJava::.jcall(conn@jc, "V", "rollback")
+  TRUE
 })
 
 
