@@ -25,18 +25,6 @@
 # http://stackoverflow.com/questions/20515358/rcmd-check-unexported-objects-imported-by-calls#comment30669909_20515358
 # https://stat.ethz.ch/pipermail/r-devel/2013-August/thread.html#67180
 
-
-#' @importFrom dplyr db_create_index
-db_create_indexes <- function(con, table, indexes = NULL, unique = FALSE, ...) {
-
-  if (is.null(indexes)) return()
-  assertthat::assert_that(is.list(indexes))
-
-  for(index in indexes) {
-    db_create_index(con, table, index, unique = unique, ...)
-  }
-}
-
 #' @importFrom dplyr translate_sql_ build_sql ident query
 build_query <- function(x, limit = NULL, is_percent = NULL) {
   assertthat::assert_that(is.null(limit) || assertthat::is.number(limit))
