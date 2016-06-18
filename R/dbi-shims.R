@@ -65,7 +65,7 @@ db_drop_table.SQLServerConnection <- function(con, table, force = FALSE, ...) {
   # IF EXISTS only supported by SQL Server 2016 (v. 13) and above.
   qry <- paste0("DROP TABLE ", if (force && con$db.version > 12) "IF EXISTS ",
     dbQuoteIdentifier(con, table))
-  assertthat::is.count(dbExecute(con, qry))
+  dbExecute(con, qry)
 }
 
 #' @importFrom dplyr db_create_index
