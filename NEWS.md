@@ -21,6 +21,17 @@ A number of changes have been made to improve DBI compliance as specified by tes
 - Bumped DBI requirement
 - NB: that more changes should be expected as the DBItest package matures.
 
+## dplyr
+
+A number of changes were made to dplyr backend. Most of these are not visible to users. However, the following are of note:
+
+- Implemented `db_create_table()`, `db_insert_into()` and `db_create_index()` for SQLServerConnection
+- Updated `db_drop_table()` to support `IF EXISTS` SQL clause if supported by 
+SQL Server
+- Printing a `src_sqlserver` is prettier
+- `db_explain` is more informative (e.g. prints relative cost of operations)
+- `db_analyze` unsupported and simply returns `TRUE`.
+
 ## Other changes
 
 - Implemented `dbBegin()`, `dbCommit()`, `dbRollback()` methods and use these in `dbWriteTable()`
