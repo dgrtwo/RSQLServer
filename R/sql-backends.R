@@ -1,8 +1,9 @@
 #' @importFrom dplyr sql_select
 #' @export
 
+
 sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
-  group_by = NULL, having = NULL, order_by = NULL, limit = NULL,
+  group_by = NULL, having = NULL, order_by = NULL, limit = NULL, distinct = FALSE,
   offset = NULL, fetch = NULL, is_percent = NULL, into = NULL, ...) {
 
   # REFERENCES --------------------------------------------------------------
@@ -24,7 +25,9 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
     limit <- mssql_top(con, limit, is_percent)
   }
 
-  out$select <- build_sql("SELECT ", limit, " ",
+  assert_that(is.character(select), length(select) > 0L)
+  out$select <- build_sql("SELECT ",
+    if (distinct) sql("DISTINCT "), limit, " ",
     escape(select, collapse = ", ", con = con), con = con)
 
   # INTO --------------------------------------------------------------------
