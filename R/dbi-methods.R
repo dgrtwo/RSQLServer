@@ -207,8 +207,8 @@ setMethod("dbExecute", c("SQLServerConnection", "character"),
     }
     x <- rJava::.jgetEx(TRUE)
     if (!rJava::is.jnull(x)) {
-      stop("execute JDBC update query failed in dbExecute (",
-        rJava::.jcall(x, "S", "getMessage"), ")")
+      stop("execute JDBC update query failed in dbExecute: ",
+        rJava::.jcall(x, "S", "getMessage"), call. = FALSE)
     } else {
       res
     }
@@ -609,8 +609,8 @@ jdbc_exception <- function (object, ...) {
   if (rJava::is.jnull(object)) {
     x <- rJava::.jgetEx(TRUE)
     if (rJava::is.jnull(x))
-      stop(...)
+      stop(..., call. = FALSE)
     else
-      stop(..., " (", rJava::.jcall(x, "S", "getMessage"), ")")
+      stop(..., ": ", rJava::.jcall(x, "S", "getMessage"), call. = FALSE)
   }
 }
