@@ -77,7 +77,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
     # http://stackoverflow.com/questions/187998/row-offset-in-sql-server
     # MSSQL versioning: http://support2.microsoft.com/kb/321185
     # OFFSET/FETCH: http://msdn.microsoft.com/en-us/library/ms188385(v=sql.110).aspx
-    assertthat::assert_that(!is.null(order_by),
+    assertthat::assert_that(length(order_by) > 0L,
       dbGetInfo(con)$db.version >= 11, is.integer(offset), offset >= 0)
     out$offset <- build_sql("OFFSET ", offset, con = con)
   }
@@ -86,7 +86,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
   if (length(fetch) > 0L) {
     # SQL Server 2012 + equivalent of LIMIT is FETCH (used with OFFSET)
     # offset will be non-NULL if it is set and SQL Server dependency is met.
-    assertthat::assert_that(!is.null(offset), dbGetInfo(con)$db.version >= 11,
+    assertthat::assert_that(length(offset) > 0L, dbGetInfo(con)$db.version >= 11,
       is.integer(fetch), fetch >= 0)
     out$fetch <- build_sql("FETCH ", fetch, " ONLY", con = con)
   }
