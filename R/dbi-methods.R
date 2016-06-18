@@ -96,7 +96,7 @@ setMethod('dbGetInfo', 'SQLServerDriver', definition = function (dbObj, ...) {
     # jTDS is a JDBC 3.0 driver. This can be determined by calling the
     # getDriverVersion() method of the JtdsDatabaseMetaData class. But
     # this method isn't defined for Driver class - so hard coded.
-    driver.version = "3.0",
+    driver.version = numeric_version("3.0"),
     client.version = rJava::.jcall(dbObj@jdrv, "S", "getVersion"),
     # Max connection defined server side rather than by driver.
     max.connections = NA)
@@ -122,7 +122,8 @@ setMethod('dbGetInfo', 'SQLServerConnection',
       host = rJava::.jfield(dbObj@jc, "S", "serverName"),
       port = rJava::.jfield(dbObj@jc, "I", "portNumber"),
       dbname = rJava::.jfield(dbObj@jc, "S", "currentDatabase"),
-      db.version = rJava::.jfield(dbObj@jc, "S", "databaseProductVersion")
+      db.version = numeric_version(
+        rJava::.jfield(dbObj@jc, "S", "databaseProductVersion"))
     )
   }
 )
