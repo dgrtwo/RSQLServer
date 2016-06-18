@@ -323,25 +323,26 @@ setMethod("dbExistsTable", "SQLServerConnection", function (conn, name, ...) {
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbRemoveTable", "SQLServerConnection", function (conn, name, ...) {
-  dbExecute(conn, paste0("DROP TABLE ", dbQuoteIdentifier(conn, name)))
+  assertthat::is.count(dbExecute(conn,
+    paste0("DROP TABLE ", dbQuoteIdentifier(conn, name))))
 })
 
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbBegin", "SQLServerConnection", function (conn, ...) {
-  dbExecute(conn, "BEGIN TRANSACTION")
+  assertthat::is.count(dbExecute(conn, "BEGIN TRANSACTION"))
 })
 
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbCommit", "SQLServerConnection", function (conn, ...) {
-  dbExecute(conn, "COMMIT TRANSACTION")
+  assertthat::is.count(dbExecute(conn, "COMMIT TRANSACTION"))
 })
 
 #' @rdname SQLServerConnection-class
 #' @export
 setMethod("dbRollback", "SQLServerConnection", function (conn, ...) {
-  dbExecute(conn, "ROLLBACK TRANSACTION")
+  assertthat::is.count(dbExecute(conn, "ROLLBACK TRANSACTION"))
 })
 
 
