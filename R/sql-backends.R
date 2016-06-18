@@ -21,8 +21,10 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
 
   assertthat::assert_that(is.character(select), length(select) > 0L)
 
-  if (length(limit) > 0L) {
-    limit <- mssql_top(con, limit, is_percent)
+  if (length(limit) > 0L || length(order_by) > 0L) {
+    # If ordering, then TOP should be specified, if it isn't already,
+    # to ensure query works when query is part of a subquery. See #49
+    limit <- mssql_top(con, limit %||% 100, is_percent %||% TRUE)
   }
 
   assert_that(is.character(select), length(select) > 0L)
