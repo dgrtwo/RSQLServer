@@ -1,5 +1,6 @@
 #' @importFrom dplyr sql_select
 #' @export
+
 sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
   group_by = NULL, having = NULL, order_by = NULL, limit = NULL,
   offset = NULL, fetch = NULL, is_percent = NULL, into = NULL, ...) {
@@ -19,7 +20,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
 
   assertthat::assert_that(is.character(select), length(select) > 0L)
 
-  if (!is.null(limit)) {
+  if (length(limit) > 0L) {
     limit <- mssql_top(con, limit, is_percent)
   }
 
@@ -28,7 +29,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
 
   # INTO --------------------------------------------------------------------
 
-  if (!is.null(into)) {
+  if (length(into) > 0L) {
     out$into <- build_sql("INTO ", into, con = con)
   }
 
@@ -47,7 +48,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
 
   # GROUP BY ----------------------------------------------------------------
 
-  if (!is.null(group_by)) {
+  if (length(group_by) > 0L) {
     assertthat::assert_that(is.character(group_by), length(group_by) > 0L)
     out$group_by <- build_sql("GROUP BY ",
       escape(group_by, collapse = ", ", con = con))
@@ -55,7 +56,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
 
   # HAVING ------------------------------------------------------------------
 
-  if (!is.null(having)) {
+  if (length(having) > 0L) {
     assertthat::assert_that(assertthat::is.string(having))
     out$having <- build_sql("HAVING ",
       escape(having, collapse = ", ", con = con))
@@ -63,14 +64,14 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
 
   # ORDER BY ----------------------------------------------------------------
 
-  if (!is.null(order_by)) {
+  if (length(order_by) > 0L) {
     assertthat::assert_that(is.character(order_by), length(order_by) > 0L)
     out$order_by <- build_sql("ORDER BY ",
       escape(order_by, collapse = ", ", con = con))
   }
 
   # Offset
-  if (!is.null(offset)) {
+  if (length(offset) > 0L) {
     # OFFSET/FETCH supported for SQL Server 2012 and higher (i.e. 11 and higher)
     # when using ORDER BY
     # http://stackoverflow.com/questions/187998/row-offset-in-sql-server
@@ -82,7 +83,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
   }
 
   # Fetch
-  if (!is.null(fetch)) {
+  if (length(fetch) > 0L) {
     # SQL Server 2012 + equivalent of LIMIT is FETCH (used with OFFSET)
     # offset will be non-NULL if it is set and SQL Server dependency is met.
     assertthat::assert_that(!is.null(offset), dbGetInfo(con)$db.version >= 11,
