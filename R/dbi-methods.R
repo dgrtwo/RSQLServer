@@ -245,21 +245,29 @@ setMethod("dbDataType", c("SQLServerConnection", "ANY"),
       # TEXT is being deprecated. Make sure SQL types are UNICODE variants
       # (prefixed by N).
       # https://technet.microsoft.com/en-us/library/aa258271(v=sql.80).aspx
-      if (dbGetInfo(dbObj)$db.version < 9) {
-        "NVARCHAR(4000)"
-      } else {
-        "NVARCHAR(MAX)"
+      n <- max(nchar(as.character(x)))
+      if (n > 4000) {
+        if (dbGetInfo(dbObj)$db.version < 9) {
+          n <- "4000"
+        } else {
+          n <- "MAX"
+        }
       }
+      paste0("NVARCHAR(", n, ")")
     }
 
     binary_type <- function (x) {
       # SQL Server 2000 does not support varbinary(max) type.
-      if (dbGetInfo(dbObj)$db.version < 9) {
-        # https://technet.microsoft.com/en-us/library/aa225972(v=sql.80).aspx
-        "VARBINARY(8000)"
-      } else {
-        "VARBINARY(MAX)"
+      n <- max(nchar(as.character(x)))
+      if (n > 8000) {
+        if (dbGetInfo(dbObj)$db.version < 9) {
+          # https://technet.microsoft.com/en-us/library/aa225972(v=sql.80).aspx
+          n <- "8000"
+        } else {
+          n <- "MAX"
+        }
       }
+      paste0("VARBINARY(", n, ")")
     }
 
     date_type <- function (x) {
