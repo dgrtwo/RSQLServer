@@ -86,13 +86,32 @@ copy_to.src_sqlserver <- function (dest, df, name = deparse(substitute(df)),
 }
 
 
-#' @importFrom dplyr compute groups
+#' @importFrom dplyr compute op_vars select_ sql_render tbl group_by_ groups
 #' @export
-compute.tbl_sqlserver <- function (x, name = random_ident_name(),
-  temporary = TRUE, ...) {
-  name <- db_save_query(x$src$con, x$query$sql, name = name,
-    temporary = temporary)
-  update(tbl(x$src, name), group_by = groups(x))
+compute.tbl_sqlserver <- function(x, name = random_table_name(), temporary = TRUE,
+  unique_indexes = list(), indexes = list(), ...) {
+
+  # Based on dplyr:
+  # https://github.com/hadley/dplyr/blob/284b91d7357cd3c184843bf9206d19cc8c0cd0e3/R/tbl-sql.r#L364
+  # Modified because db_save_query returns a temp table name which must be used
+  # by subsequent method calls.
+
+  if (!is.list(indexes)) {
+    indexes <- as.list(indexes)
+  }
+  if (!is.list(unique_indexes)) {
+    unique_indexes <- as.list(unique_indexes)
+  }
+
+  vars <- op_vars(x)
+  assertthat::assert_that(all(unlist(indexes) %in% vars))
+  assertthat::assert_that(all(unlist(unique_indexes) %in% vars))
+  x_aliased <- select_(x, .dots = vars) # avoids problems with SQLite quoting (#1754)
+  name <- db_save_query(x$src$con, sql_render(x_aliased), name = name, temporary = temporary)
+  db_create_indexes(x$src$con, name, unique_indexes, unique = TRUE)
+  db_create_indexes(x$src$con, name, indexes, unique = FALSE)
+
+  tbl(x$src, name) %>% group_by_(.dots = groups(x))
 }
 
 #' Intersect and setdiff methods

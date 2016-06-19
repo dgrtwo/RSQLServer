@@ -212,8 +212,7 @@ only_has_names <- function(x, nms) {
   all(names(x) %in% nms)
 }
 
-# From random_table_name
-random_ident_name <- function (n = 10) {
+random_table_name <- function (n = 10) {
   paste0(sample(letters, n, replace = TRUE), collapse = "")
 }
 
