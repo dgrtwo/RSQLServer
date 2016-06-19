@@ -14,7 +14,7 @@ db_has_table.SQLServerConnection <- function (con, table) {
   NA
 }
 
-#' @importFrom dplyr db_save_query
+#' @importFrom dplyr db_save_query sql_subquery
 #' @export
 db_save_query.SQLServerConnection <- function (con, sql, name, temporary = TRUE,
   ...) {

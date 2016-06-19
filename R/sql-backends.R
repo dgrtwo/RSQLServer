@@ -1,4 +1,4 @@
-#' @importFrom dplyr sql_select
+#' @importFrom dplyr sql_select sql
 #' @export
 
 sql_select.SQLServerConnection <- function (con, select, from, where = NULL,

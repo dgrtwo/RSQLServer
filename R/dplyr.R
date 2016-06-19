@@ -87,6 +87,7 @@ copy_to.src_sqlserver <- function (dest, df, name = deparse(substitute(df)),
 
 
 #' @importFrom dplyr compute op_vars select_ sql_render tbl group_by_ groups
+#' @importFrom dplyr db_create_indexes %>% db_begin db_rollback db_commit
 #' @export
 compute.tbl_sqlserver <- function(x, name = random_table_name(), temporary = TRUE,
   unique_indexes = list(), indexes = list(), ...) {
