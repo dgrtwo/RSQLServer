@@ -63,7 +63,6 @@ db_insert_into.SQLServerConnection <- function(con, table, values, ...) {
 
 db_drop_table.SQLServerConnection <- function(con, table, force = FALSE, ...) {
   # IF EXISTS only supported by SQL Server 2016 (v. 13) and above.
-  browser()
   qry <- paste0("DROP TABLE ", if (force && con$db.version > 12) "IF EXISTS ",
     dbQuoteIdentifier(con, table))
   assertthat::is.number(dbExecute(con, qry))
