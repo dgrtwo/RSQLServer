@@ -114,66 +114,41 @@ compute.tbl_sqlserver <- function(x, name = random_table_name(), temporary = TRU
   tbl(x$src, name) %>% group_by_(.dots = groups(x))
 }
 
-#' Intersect and setdiff methods
-#'
-#' Customised intersect and setdiff methods for the dplyr generics (which
-#' override base package function definitions). These methods
-#' only support SQL Server 2005 and greater.
-#'
-#' @param x,y objects to compare (ignoring order)
-#' @param copy If \code{x} and \code{y} are not from the same data source,
-#'   and \code{copy} is \code{TRUE}, then \code{y} will be copied into the
-#'   same src as \code{x}.  This allows you to join tables across srcs, but
-#'   it is a potentially expensive operation so you must opt into it.
-#' @param ... other arguments passed on to methods
-#' @importFrom dplyr intersect sql_set_op
-#' @export intersect
-#' @export
-#' @seealso \code{\link[dplyr]{setdiff}} \code{\link[dplyr]{intersect}}
-#' @aliases setdiff intersect
-#' @name setops
-intersect.tbl_sqlserver <- function(x, y, copy = FALSE, ...) {
-  # SQL Server 2000 does not support INTERSECT or EXCEPT
-  assertthat::assert_that(x$src$info$db.version > 8, y$src$info$db.version > 8)
-  y <- auto_copy(x, y, copy)
-  sql <- sql_set_op(x$src$con, x, y, "INTERSECT")
-  update(tbl(x$src, sql), group_by = groups(x))
-}
-
-#' @importFrom dplyr setdiff
-#' @export setdiff
-#' @export
-#' @rdname setops
-setdiff.tbl_sqlserver <- function(x, y, copy = FALSE, ...) {
-  # SQL Server 2000 does not support INTERSECT or EXCEPT
-  assertthat::assert_that(x$src$info$db.version > 8, y$src$info$db.version > 8)
-  y <- auto_copy(x, y, copy)
-  sql <- sql_set_op(x$src$con, x, y, "EXCEPT")
-  update(tbl(x$src, sql), group_by = groups(x))
-}
-
-#' @importFrom stats update
-#' @export
-update.tbl_sqlserver <- function(object, ...) {
-  # Exact copy of dplyr method and in particular, not simply call NextMethod()
-  # because I need update to call the RSQLServer specific copy of build_query.
-  # See #40 and #49.
-  args <- list(...)
-  assertthat::assert_that(only_has_names(args,
-    c("select", "where", "group_by", "order_by", "summarise")))
-
-  for (nm in names(args)) {
-    object[[nm]] <- args[[nm]]
-  }
-
-  # Figure out variables
-  if (is.null(object$select)) {
-    var_names <- db_query_fields(object$src$con, object$from)
-    vars <- lapply(var_names, as.name)
-    object$select <- vars
-  }
-
-  object$query <- build_query(object)
-  object
-}
+# #' Intersect and setdiff methods
+# #'
+# #' Customised intersect and setdiff methods for the dplyr generics (which
+# #' override base package function definitions). These methods
+# #' only support SQL Server 2005 and greater.
+# #'
+# #' @param x,y objects to compare (ignoring order)
+# #' @param copy If \code{x} and \code{y} are not from the same data source,
+# #'   and \code{copy} is \code{TRUE}, then \code{y} will be copied into the
+# #'   same src as \code{x}.  This allows you to join tables across srcs, but
+# #'   it is a potentially expensive operation so you must opt into it.
+# #' @param ... other arguments passed on to methods
+# #' @importFrom dplyr intersect sql_set_op
+# #' @export intersect
+# #' @export
+# #' @seealso \code{\link[dplyr]{setdiff}} \code{\link[dplyr]{intersect}}
+# #' @aliases setdiff intersect
+# #' @name setops
+# intersect.tbl_sqlserver <- function(x, y, copy = FALSE, ...) {
+#   # SQL Server 2000 does not support INTERSECT or EXCEPT
+#   assertthat::assert_that(x$src$info$db.version > 8, y$src$info$db.version > 8)
+#   y <- auto_copy(x, y, copy)
+#   sql <- sql_set_op(x$src$con, x, y, "INTERSECT")
+#   update(tbl(x$src, sql), group_by = groups(x))
+# }
+#
+# #' @importFrom dplyr setdiff
+# #' @export setdiff
+# #' @export
+# #' @rdname setops
+# setdiff.tbl_sqlserver <- function(x, y, copy = FALSE, ...) {
+#   # SQL Server 2000 does not support INTERSECT or EXCEPT
+#   assertthat::assert_that(x$src$info$db.version > 8, y$src$info$db.version > 8)
+#   y <- auto_copy(x, y, copy)
+#   sql <- sql_set_op(x$src$con, x, y, "EXCEPT")
+#   update(tbl(x$src, sql), group_by = groups(x))
+# }
 
