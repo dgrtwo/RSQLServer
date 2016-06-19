@@ -14,12 +14,6 @@ db_has_table.SQLServerConnection <- function (con, table) {
   NA
 }
 
-#' @importFrom dplyr db_query_fields ident
-#' @export
-db_query_fields.SQLServerConnection <- function (con, sql, ...) {
-  dbListFields(con, sql, ...)
-}
-
 #' @importFrom dplyr db_save_query
 #' @export
 db_save_query.SQLServerConnection <- function (con, sql, name, temporary = TRUE,
