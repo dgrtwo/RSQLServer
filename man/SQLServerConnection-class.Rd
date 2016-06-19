@@ -7,6 +7,7 @@
 \alias{dbCommit,SQLServerConnection-method}
 \alias{dbDataType,SQLServerConnection-method}
 \alias{dbDisconnect,SQLServerConnection-method}
+\alias{dbExecute,SQLServerConnection,character-method}
 \alias{dbExistsTable,SQLServerConnection-method}
 \alias{dbGetInfo,SQLServerConnection-method}
 \alias{dbIsValid,SQLServerConnection-method}
@@ -25,6 +26,9 @@
 \S4method{dbDisconnect}{SQLServerConnection}(conn, ...)
 
 \S4method{dbSendQuery}{SQLServerConnection,character}(conn, statement, ...)
+
+\S4method{dbExecute}{SQLServerConnection,character}(conn, statement, ...,
+  list = NULL)
 
 \S4method{dbReadTable}{SQLServerConnection,character}(conn, name, ...)
 

@@ -173,7 +173,7 @@ setMethod("dbSendQuery", c("SQLServerConnection", "character"),
     new("SQLServerResult", jr = jr, md = md, stat = stat, pull = rJava::.jnull())
 })
 
-#' @rdname dbExecute
+#' @rdname SQLServerConnection-class
 #' @export
 
 setMethod("dbExecute", c("SQLServerConnection", "character"),
