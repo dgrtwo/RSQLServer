@@ -53,7 +53,7 @@ tbl.src_sqlserver <- function (src, from, ...) {
   tbl_sql("sqlserver", src = src, from = from, ...)
 }
 
-#' @importFrom dplyr copy_to
+#' @importFrom dplyr copy_to db_data_type
 #' @export
 
 copy_to.src_sqlserver <- function (dest, df, name = deparse(substitute(df)),
