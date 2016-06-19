@@ -215,8 +215,9 @@ setMethod("dbExecute", c("SQLServerConnection", "character"),
   }
 )
 
-#' @rdname dbExecute
+#' @rdname SQLServerConnection-class
 #' @export
+
 dbSendUpdate <- function (conn, statement, ...) {
   .Deprecated("dbExecute")
   dbExecute(conn, statement)
