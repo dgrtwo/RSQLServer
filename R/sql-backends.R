@@ -27,7 +27,7 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
     limit <- mssql_top(con, limit %||% 100, is_percent %||% TRUE)
   }
 
-  assert_that(is.character(select), length(select) > 0L)
+  assertthat::assert_that(is.character(select), length(select) > 0L)
   out$select <- build_sql("SELECT ",
     if (distinct) sql("DISTINCT "), limit, " ",
     escape(select, collapse = ", ", con = con), con = con)
