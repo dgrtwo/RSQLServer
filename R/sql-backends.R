@@ -1,7 +1,6 @@
 #' @importFrom dplyr sql_select
 #' @export
 
-
 sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
   group_by = NULL, having = NULL, order_by = NULL, limit = NULL, distinct = FALSE,
   offset = NULL, fetch = NULL, is_percent = NULL, into = NULL, ...) {
@@ -101,59 +100,6 @@ sql_select.SQLServerConnection <- function (con, select, from, where = NULL,
   escape(unname(compact(out)), collapse = "\n", parens = FALSE, con = con)
 }
 
-#' @importFrom dplyr sql_join sql sql_escape_ident
-#' @importFrom stats setNames
-#' @export
-sql_join.SQLServerConnection <- function(con, x, y, type = "inner",
-  by = NULL, ...) {
-  join <- switch(type,
-    left = sql("LEFT"),
-    inner = sql("INNER"),
-    right = sql("RIGHT"),
-    full = sql("FULL"),
-    stop("Unknown join type:", type, call. = FALSE)
-  )
-
-  by <- common_by(by, x, y)
-
-  # Ensure tables have unique names
-  x_names <- auto_names(x$select)
-  y_names <- auto_names(y$select)
-  uniques <- unique_names(x_names, y_names, by$x[by$x == by$y])
-
-  if (is.null(uniques)) {
-    sel_vars <- c(x_names, y_names)
-  } else {
-    x <- update(x, select = setNames(x$select, uniques$x))
-    y <- update(y, select = setNames(y$select, uniques$y))
-
-    by$x <- unname(uniques$x[by$x])
-    by$y <- unname(uniques$y[by$y])
-
-    sel_vars <- unique(c(uniques$x, uniques$y))
-  }
-
-  xname <- unique_name()
-  yname <- unique_name()
-  on <- sql_vector(paste0(
-    paste0(sql_escape_ident(con, xname), ".",
-      sql_escape_ident(con, by$x)), " = ",
-    paste0(sql_escape_ident(con, yname), ".",
-      sql_escape_ident(con, by$y)),
-    collapse = " AND "), parens = TRUE)
-  cond <- build_sql("ON ", on, con = con)
-
-  from <- build_sql(
-    'SELECT * FROM ',
-    sql_subquery(con, x$query$sql, xname), "\n\n",
-    join, " JOIN \n\n" ,
-    sql_subquery(con, y$query$sql, yname), "\n\n",
-    cond, con = con
-  )
-  attr(from, "vars") <- lapply(sel_vars, as.name)
-
-  from
-}
 
 #' @importFrom dplyr escape
 mssql_top <- function (con, n, is_percent = NULL) {
