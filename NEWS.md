@@ -28,11 +28,11 @@ A number of changes were made to dplyr backend. Most of these are not visible to
 - Implemented `db_create_table()`, `db_insert_into()` and `db_create_index()` for SQLServerConnection
 - Updated `db_drop_table()` to support `IF EXISTS` SQL clause if supported by 
 SQL Server
+- `db_query_fields()` method for SQLServerConnection removed in favour of default dplyr method. The latter better handles sub-queries.
+- `sql_select()` method supports the `DISTINCT` keyword and includes `TOP` keyword when query results are ordered.
 - `compute()` is now modified version of dplyr default method
 - `db_explain()` is more informative (e.g. prints relative cost of operations)
 - `db_analyze()` unsupported and simply returns `TRUE`.
-- `db_query_fields()` method for SQLServerConnection removed in favour of default dplyr method. The latter better handles sub-queries.
-- `sql_select()` method supports the `DISTINCT` keyword and includes `TOP` keyword when query results are ordered.
 - `src_sqlserver` has a nicer print
 
 ## Other changes
